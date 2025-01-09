@@ -1,0 +1,12 @@
+# Node.js dependencies
+node_modules/
+
+# Backend environment variables
+backend/.env
+
+# Logs
+*.log
+
+# OS/Editor files
+.DS_Store
+*.swp
