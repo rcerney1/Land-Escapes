@@ -1,6 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db/pool'); // Import PostgreSQL pool connection
+const pool = require('../db/pool');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const s3 = require('../config/aws'); // AWS S3 configuration
+
+// Configure Multer-S3 for image uploads
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: process.env.AWS_S3_BUCKET,
+        acl: 'public-read',
+        metadata: (req, file, cb) => {
+            cb(null, { fieldName: file.fieldname });
+        },
+        key: (req, file, cb) => {
+            cb(null, `projects/${Date.now().toString()}-${file.originalname}`);
+        },
+    }),
+});
 
 // GET: Fetch all projects
 router.get('/', async (req, res) => {
@@ -13,13 +31,15 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST: Add a new project
-router.post('/', async (req, res) => {
-    const { title, description, image_url } = req.body;
+// POST: Add a new project with an image upload
+router.post('/', upload.single('image'), async (req, res) => {
+    const { title, description } = req.body;
 
     if (!title || !description) {
         return res.status(400).json({ message: 'Title and description are required' });
     }
+
+    const image_url = req.file.location;
 
     try {
         await pool.query(
