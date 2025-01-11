@@ -3,14 +3,14 @@ const router = express.Router();
 const pool = require('../db/pool');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-const s3 = require('../config/aws'); // AWS S3 configuration
+const s3 = require('../config/aws');
+
 
 // Configure Multer-S3 for image uploads
 const upload = multer({
     storage: multerS3({
         s3: s3,
         bucket: process.env.AWS_S3_BUCKET,
-        acl: 'public-read',
         metadata: (req, file, cb) => {
             cb(null, { fieldName: file.fieldname });
         },
@@ -31,33 +31,55 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST: Add a new project with an image upload
 router.post('/', upload.single('image'), async (req, res) => {
-    const { title, description } = req.body;
-
-    if (!title || !description) {
-        return res.status(400).json({ message: 'Title and description are required' });
-    }
-
-    const image_url = req.file.location;
-
     try {
-        await pool.query(
+        console.log('Request body:', req.body);
+        console.log('File object from multer:', req.file);
+
+        const { title, description } = req.body;
+
+        if (!req.file || !req.file.location) {
+            console.error('Image upload failed or file missing in request.');
+            return res.status(500).json({ message: 'Error uploading image' });
+        }
+
+        const image_url = req.file.location;
+
+        const result = await pool.query(
             'INSERT INTO projects (title, description, image_url) VALUES ($1, $2, $3)',
             [title, description, image_url]
         );
+
+        console.log('Database query result:', result);
         res.status(201).json({ message: 'Project added successfully' });
     } catch (error) {
-        console.error('Error adding project:', error);
-        res.status(500).json({ message: 'Error adding project' });
+        console.error('Error in POST /api/projects:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 // DELETE: Delete a project by ID
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
+        const project = await pool.query('SELECT image_url FROM projects WHERE id = $1', [id]);
+
+        if (project.rows.length > 0) {
+            const imageKey = project.rows[0].image_url.split('/').pop();
+
+            s3.deleteObject(
+                {
+                    Bucket: process.env.AWS_S3_BUCKET,
+                    Key: `projects/${imageKey}`,
+                },
+                (err) => {
+                    if (err) console.error('Error deleting file from S3:', err);
+                }
+            );
+        }
+
         await pool.query('DELETE FROM projects WHERE id = $1', [id]);
         res.json({ message: 'Project deleted successfully' });
     } catch (error) {
