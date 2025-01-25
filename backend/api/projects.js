@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching projects:', error);
-        res.status(500).json({ message: 'Error fetching projects' });
+        res.status(500).json({ message: 'Error fetching projects ' });
     }
 });
 
