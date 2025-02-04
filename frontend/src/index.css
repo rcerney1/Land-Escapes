@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "@fontsource/playfair-display"; /* Headings */
+@import "@fontsource/poppins"; /* Body text */
+

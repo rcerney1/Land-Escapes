@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ProjectCarousel from "../components/ProjectCarousel";
 
 function Home() {
     const [about, setAbout] = useState("");
@@ -26,54 +27,68 @@ function Home() {
     return (
         <div>
             {/* Hero Section */}
-            <section className="bg-gray-800 text-white h-screen flex flex-col justify-center items-center">
-                <h1 className="text-5xl font-bold">Welcome to Land Escapes</h1>
-                <p className="text-xl mt-4">Professional Landscaping Services</p>
-                <button className="mt-6 px-6 py-3 bg-green-500 text-white text-lg rounded hover:bg-green-600">
-                    Get a Free Estimate
-                </button>
+            <section
+                className="h-screen flex flex-col justify-center items-center text-white text-center relative"
+                style={{
+                    backgroundImage: "url('/land-escapes-hero-image-3.jpg')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            >
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                    <h1 className="text-5xl font-bold drop-shadow-2xl">Welcome to Land Escapes</h1>
+                    <p className="text-xl mt-4 drop-shadow-2xl">Professional Landscaping Services</p>
+                    <button className="mt-6 px-6 py-3 bg-green-500 text-white text-lg rounded hover:bg-green-600 shadow-lg">
+                        Get a Free Estimate
+                    </button>
+                </div>
             </section>
+
+
 
             {/* About Section */}
-            <section className="p-10 text-center">
-                <h2 className="text-3xl font-bold">About Us</h2>
-                <p className="mt-4 text-lg">{about || "Loading..."}</p>
+            <section className="py-20 bg-[#b8cbb8] text-black flex flex-col items-center text-center">
+                <h2 className="text-4xl font-heading">About Us</h2>
+                <p className="mt-4 text-lg max-w-3xl font-body">{about || "Loading..."}</p>
             </section>
+
 
             {/* Services Section */}
-            <section className="bg-gray-100 p-10 text-center">
-                <h2 className="text-3xl font-bold">Our Services</h2>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <section className="bg-[#f5f5f5] p-16 min-h-screen flex flex-col justify-center items-center text-center">
+                <h2 className="text-4xl font-heading">Our Services</h2>
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                     {services.length > 0 ? (
                         services.map((service) => (
-                            <div key={service.id} className="p-6 bg-white shadow-lg rounded">
-                                <h3 className="text-xl font-bold">{service.name}</h3>
-                                <p className="mt-2">{service.description}</p>
+                            <div
+                                key={service.id}
+                                className="p-8 bg-white shadow-lg rounded-lg transition-all duration-300 hover:bg-gray-100"
+                            >
+                                <img
+                                    src={service.image_url}
+                                    alt={service.name}
+                                    className="w-full h-48 object-cover rounded-lg"
+                                />
+                                <h3 className="text-2xl font-heading mt-4">{service.name}</h3>
+                                <p className="mt-2 text-lg font-body">{service.description}</p>
                             </div>
                         ))
                     ) : (
-                        <p>Loading services...</p>
+                        <p className="text-lg">Loading services...</p>
                     )}
                 </div>
             </section>
 
+
             {/* Featured Projects Section */}
-            <section className="p-10 text-center">
-                <h2 className="text-3xl font-bold">Featured Projects</h2>
-                <p className="mt-4 text-lg">Check out some of our recent landscaping work.</p>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {projects.length > 0 ? (
-                        projects.map((project) => (
-                            <div key={project.id} className="p-6 bg-gray-300 h-40 rounded flex flex-col justify-center items-center">
-                                <img src={project.image_url} alt={project.title} className="w-full h-32 object-cover rounded" />
-                                <h3 className="text-lg font-bold mt-2">{project.title}</h3>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Loading projects...</p>
-                    )}
-                </div>
+            <section className="py-20 bg-white">
+                <ProjectCarousel />
             </section>
+
+
         </div>
     );
 }
