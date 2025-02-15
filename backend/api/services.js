@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+//POST: Add a service
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         console.log('Request body:', req.body);
@@ -52,6 +53,44 @@ router.post('/', upload.single('image'), async (req, res) => {
         res.status(201).json({ message: 'Service added successfully' });
     } catch (error) {
         console.error('Error adding service:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+//Delete a service
+// DELETE: Remove a service by ID and delete its image from S3
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Get the image URL from the database
+        const service = await pool.query('SELECT image_url FROM services WHERE id = $1', [id]);
+
+        if (service.rows.length === 0) {
+            return res.status(404).json({ message: 'Service not found' });
+        }
+
+        const imageKey = service.rows[0].image_url.split('/').pop();
+
+        // Delete image from S3
+        s3.deleteObject(
+            {
+                Bucket: process.env.AWS_S3_BUCKET,
+                Key: `services/${imageKey}`,
+            },
+            (err) => {
+                if (err) {
+                    console.error('Error deleting file from S3:', err);
+                }
+            }
+        );
+
+        // Delete the service from the database
+        await pool.query('DELETE FROM services WHERE id = $1', [id]);
+
+        res.json({ message: 'Service deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting service:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

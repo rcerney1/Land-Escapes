@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProjectCarousel from "../components/ProjectCarousel";
 
+
+
 function Home() {
     const [about, setAbout] = useState("");
     const [services, setServices] = useState([]);
     const [projects, setProjects] = useState([]);
+
+    console.log(projects)
 
     useEffect(() => {
         // Fetch About Section
@@ -28,13 +32,16 @@ function Home() {
         <div>
             {/* Hero Section */}
             <section
-                className="h-screen flex flex-col justify-center items-center text-white text-center relative"
+                className="relative h-screen flex flex-col justify-center items-center text-white text-center"
                 style={{
                     backgroundImage: "url('/land-escapes-hero-image-3.jpg')",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
+                    position: "relative",
+                    zIndex: "0", // Ensures hero stays behind navbar
                 }}
             >
+
                 {/* Dark Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
@@ -87,6 +94,7 @@ function Home() {
             <section className="py-20 bg-white">
                 <ProjectCarousel />
             </section>
+
 
 
         </div>
