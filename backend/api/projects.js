@@ -31,6 +31,8 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+//create a project
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         console.log('Request body:', req.body);
@@ -87,5 +89,51 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ message: 'Error deleting project' });
     }
 });
+
+// PUT: Update an existing project (Title, Description, and optionally Image)
+router.put('/:id', upload.single('image'), async (req, res) => {
+    console.log("test")
+    const { id } = req.params;
+    const { title, description } = req.body;
+    let image_url = req.file ? req.file.location : null;
+
+    try {
+        // Fetch the existing project
+        const existingProject = await pool.query('SELECT * FROM projects WHERE id = $1', [id]);
+
+        if (existingProject.rows.length === 0) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // If a new image is uploaded, delete the old one from S3
+        if (image_url) {
+            const oldImageKey = existingProject.rows[0].image_url.split('/').pop();
+            s3.deleteObject(
+                {
+                    Bucket: process.env.AWS_S3_BUCKET,
+                    Key: `projects/${oldImageKey}`,
+                },
+                (err) => {
+                    if (err) console.error('Error deleting old image from S3:', err);
+                }
+            );
+        } else {
+            // Keep the old image URL if no new image is provided
+            image_url = existingProject.rows[0].image_url;
+        }
+
+        // Update the project
+        await pool.query(
+            'UPDATE projects SET title = $1, description = $2, image_url = $3 WHERE id = $4',
+            [title, description, image_url, id]
+        );
+
+        res.json({ message: 'Project updated successfully' });
+    } catch (error) {
+        console.error('Error updating project:', error);
+        res.status(500).json({ message: 'Error updating project' });
+    }
+});
+
 
 module.exports = router;
