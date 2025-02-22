@@ -95,5 +95,49 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// PUT: Update a service by ID (Name, Description, and optionally Image)
+router.put('/:id', upload.single('image'), async (req, res) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    let image_url = req.file ? req.file.location : null;
+
+    try {
+        // Fetch the existing service
+        const existingService = await pool.query('SELECT * FROM services WHERE id = $1', [id]);
+
+        if (existingService.rows.length === 0) {
+            return res.status(404).json({ message: 'Service not found' });
+        }
+
+        // If a new image is uploaded, delete the old one from S3
+        if (image_url) {
+            const oldImageKey = existingService.rows[0].image_url.split('/').pop();
+            s3.deleteObject(
+                {
+                    Bucket: process.env.AWS_S3_BUCKET,
+                    Key: `services/${oldImageKey}`,
+                },
+                (err) => {
+                    if (err) console.error('Error deleting old image from S3:', err);
+                }
+            );
+        } else {
+            // Keep the old image URL if no new image is provided
+            image_url = existingService.rows[0].image_url;
+        }
+
+        // Update the service
+        await pool.query(
+            'UPDATE services SET name = $1, description = $2, image_url = $3 WHERE id = $4',
+            [name, description, image_url, id]
+        );
+
+        res.json({ message: 'Service updated successfully' });
+    } catch (error) {
+        console.error('Error updating service:', error);
+        res.status(500).json({ message: 'Error updating service' });
+    }
+});
+
 
 module.exports = router;
