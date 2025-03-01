@@ -1,13 +1,17 @@
+// frontend/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
+import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Admin from "./pages/Admin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function NotFound() {
-  return <div className="p-10 text-3xl font-bold">404 - Page Not Found</div>
+  return <div className="p-10 text-3xl font-bold">404 - Page Not Found</div>;
 }
+
 function App() {
   return (
     <Router>
@@ -15,7 +19,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
