@@ -17,7 +17,6 @@ const Admin = () => {
                     <li><button onClick={() => setActiveSection("about")} className="w-full text-left">Manage About</button></li>
                     <li><button onClick={() => setActiveSection("services")} className="w-full text-left">Manage Services</button></li>
                     <li><button onClick={() => setActiveSection("projects")} className="w-full text-left">Manage Projects</button></li>
-                    <li><button onClick={() => setActiveSection("messages")} className="w-full text-left">View Messages</button></li>
                 </ul>
                 {/* Home Button */}
                 <div className="mt-6 border-t border-gray-700 pt-4">
