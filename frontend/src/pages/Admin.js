@@ -25,6 +25,14 @@ const Admin = () => {
                         Home
                     </Link>
                 </div>
+
+                <Link to="/change-password" className="block text-center mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
+                    Change Password
+                </Link>
+
+                <Link to="/inbox" className="block text-center mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                    View Inbox
+                </Link>
             </aside>
 
             {/* Content Area */}

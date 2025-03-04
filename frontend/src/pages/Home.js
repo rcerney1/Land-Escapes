@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProjectCarousel from "../components/ProjectCarousel";
+import { Link } from "react-router-dom";  // Import Link from React Router
 
 
 
@@ -49,9 +50,11 @@ function Home() {
                 <div className="relative z-10">
                     <h1 className="text-5xl font-bold drop-shadow-2xl">Welcome to Land Escapes</h1>
                     <p className="text-xl mt-4 drop-shadow-2xl">Professional Landscaping Services</p>
-                    <button className="mt-6 px-6 py-3 bg-green-500 text-white text-lg rounded hover:bg-green-600 shadow-lg">
-                        Get a Free Estimate
-                    </button>
+                    <Link to="/contact">
+                        <button className="mt-6 px-6 py-3 bg-green-500 text-white text-lg rounded hover:bg-green-600 shadow-lg">
+                            Get a Free Estimate
+                        </button>
+                    </Link>
                 </div>
             </section>
 

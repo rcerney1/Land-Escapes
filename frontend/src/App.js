@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ChangePassword from "./pages/ChangePassword";
+import Inbox from "./pages/Inbox";
 
 function NotFound() {
   return <div className="p-10 text-3xl font-bold">404 - Page Not Found</div>;
@@ -28,6 +30,8 @@ function App() {
           } 
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+        <Route path="/inbox" element={<ProtectedRoute><Inbox /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
