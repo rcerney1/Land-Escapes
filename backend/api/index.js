@@ -5,6 +5,7 @@ const aboutRoutes = require('./about');
 const projectRoutes = require('./projects');
 const serviceRoutes = require('./services');
 const messageRoutes = require('./messages');
+const contactRoutes = require("./contact");
 const authRoutes = require('./auth').router;
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router.use('/about', aboutRoutes);
 router.use('/projects', projectRoutes);
 router.use('/services', serviceRoutes);
 router.use('/messages', messageRoutes);
+router.use("/contact", contactRoutes);
 router.use('/auth', authRoutes);  // <-- Register authentication routes
 
 module.exports = router;

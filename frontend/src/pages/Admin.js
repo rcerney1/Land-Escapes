@@ -4,6 +4,7 @@ import ManageAbout from "../components/admin/ManageAbout";
 import ManageServices from "../components/admin/ManageServices";
 import ManageProjects from "../components/admin/ManageProjects";
 import ViewMessages from "../components/admin/ViewMessages";
+import ManageContact from "../components/admin/ManageContact"; // Import ManageContact
 
 const Admin = () => {
     const [activeSection, setActiveSection] = useState("about");
@@ -17,7 +18,9 @@ const Admin = () => {
                     <li><button onClick={() => setActiveSection("about")} className="w-full text-left">Manage About</button></li>
                     <li><button onClick={() => setActiveSection("services")} className="w-full text-left">Manage Services</button></li>
                     <li><button onClick={() => setActiveSection("projects")} className="w-full text-left">Manage Projects</button></li>
+                    <li><button onClick={() => setActiveSection("contact")} className="w-full text-left">Manage Contact Info</button></li>
                 </ul>
+
                 {/* Home Button */}
                 <div className="mt-6 border-t border-gray-700 pt-4">
                     <Link to="/" className="block text-center bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg">
@@ -40,6 +43,7 @@ const Admin = () => {
                 {activeSection === "services" && <ManageServices />}
                 {activeSection === "projects" && <ManageProjects />}
                 {activeSection === "messages" && <ViewMessages />}
+                {activeSection === "contact" && <ManageContact />} {/* New Section for Contact Info */}
             </main>
         </div>
     );
