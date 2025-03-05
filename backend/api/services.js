@@ -57,33 +57,51 @@ router.post('/', upload.single('image'), async (req, res) => {
     }
 });
 
-//Delete a service
-// DELETE: Remove a service by ID and delete its image from S3
+// DELETE: Remove a service by ID and delete its image from S3 (if it exists)
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Get the image URL from the database
+        // Get the service details from the database
         const service = await pool.query('SELECT image_url FROM services WHERE id = $1', [id]);
+
+        console.log("Service Data:", service.rows); // Debugging log
 
         if (service.rows.length === 0) {
             return res.status(404).json({ message: 'Service not found' });
         }
 
-        const imageKey = service.rows[0].image_url.split('/').pop();
+        const imageUrl = service.rows[0].image_url;
 
-        // Delete image from S3
-        s3.deleteObject(
-            {
-                Bucket: process.env.AWS_S3_BUCKET,
-                Key: `services/${imageKey}`,
-            },
-            (err) => {
-                if (err) {
-                    console.error('Error deleting file from S3:', err);
-                }
-            }
-        );
+        // If there's an image, delete it from S3
+        if (imageUrl) {
+            console.log("Image URL found, deleting from S3...");
+
+            // Extract the correct S3 key from the image URL
+            const imageKey = decodeURIComponent(new URL(imageUrl).pathname.split('/').slice(2).join('/'));
+            console.log("Deleting image from S3:", imageKey);
+
+            // Delete image from S3 (Wait for this to complete)
+            await new Promise((resolve, reject) => {
+                s3.deleteObject(
+                    {
+                        Bucket: process.env.AWS_S3_BUCKET,
+                        Key: imageKey,
+                    },
+                    (err, data) => {
+                        if (err) {
+                            console.error("Error deleting file from S3:", err);
+                            reject(err);
+                        } else {
+                            console.log("S3 delete success:", data);
+                            resolve(data);
+                        }
+                    }
+                );
+            });
+        } else {
+            console.log("No image found, skipping S3 deletion.");
+        }
 
         // Delete the service from the database
         await pool.query('DELETE FROM services WHERE id = $1', [id]);
@@ -94,6 +112,7 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 // PUT: Update a service by ID (Name, Description, and optionally Image)
 router.put('/:id', upload.single('image'), async (req, res) => {
