@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link } from "react-router-dom"; // Import useLocation
 import axios from "axios";
 
 function Footer() {
@@ -25,9 +25,11 @@ function Footer() {
                 <p className="mt-4 text-sm">&copy; {new Date().getFullYear()} Land Escapes. All rights reserved.</p>
             </div>
             <div>
-                <Link to="/admin" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    Admin
-                </Link>
+                <li>
+                    <Link to="/admin" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Admin
+                    </Link>
+                </li>
             </div>
         </footer>
     );
