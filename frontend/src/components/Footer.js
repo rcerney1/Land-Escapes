@@ -24,13 +24,7 @@ function Footer() {
                 <p>📍 {contact.address}</p>
                 <p className="mt-4 text-sm">&copy; {new Date().getFullYear()} Land Escapes. All rights reserved.</p>
             </div>
-            <div>
-                <li>
-                    <Link to="/admin" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Admin
-                    </Link>
-                </li>
-            </div>
+            
         </footer>
     );
 }
