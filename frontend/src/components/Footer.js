@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Import useLocation
 import axios from "axios";
 
 function Footer() {

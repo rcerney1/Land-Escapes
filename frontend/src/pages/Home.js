@@ -3,28 +3,28 @@ import axios from "axios";
 import ProjectCarousel from "../components/ProjectCarousel";
 import { Link } from "react-router-dom";  // Import Link from React Router
 
-
-
 function Home() {
     const [about, setAbout] = useState("");
     const [services, setServices] = useState([]);
     const [projects, setProjects] = useState([]);
 
-    console.log(projects)
+    console.log(projects);
 
     useEffect(() => {
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
         // Fetch About Section
-        axios.get("http://localhost:5000/api/about")
+        axios.get(`${API_BASE_URL}/api/about`)
             .then((res) => setAbout(res.data.content))
             .catch((err) => console.error("Error fetching about:", err));
 
         // Fetch Services
-        axios.get("http://localhost:5000/api/services")
+        axios.get(`${API_BASE_URL}/api/services`)
             .then((res) => setServices(res.data))
             .catch((err) => console.error("Error fetching services:", err));
 
         // Fetch Featured Projects (limit to 3 for homepage)
-        axios.get("http://localhost:5000/api/projects")
+        axios.get(`${API_BASE_URL}/api/projects`)
             .then((res) => setProjects(res.data.slice(0, 3)))
             .catch((err) => console.error("Error fetching projects:", err));
     }, []);
@@ -58,14 +58,11 @@ function Home() {
                 </div>
             </section>
 
-
-
             {/* About Section */}
             <section className="py-20 bg-[#b8cbb8] text-black flex flex-col items-center text-center">
                 <h2 className="text-4xl font-heading">About Us</h2>
                 <p className="mt-4 text-lg max-w-3xl font-body">{about || "Loading..."}</p>
             </section>
-
 
             {/* Services Section */}
             <section className="bg-[#f5f5f5] p-16 min-h-screen flex flex-col justify-center items-center text-center">
@@ -92,14 +89,10 @@ function Home() {
                 </div>
             </section>
 
-
             {/* Featured Projects Section */}
             <section className="py-20 bg-white">
                 <ProjectCarousel />
             </section>
-
-
-
         </div>
     );
 }
