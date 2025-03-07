@@ -1,4 +1,3 @@
-// frontend/pages/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +8,15 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Use environment variable for backend API URL
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Make sure the URL matches your backend server endpoint
-      const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      // Use the deployed backend URL instead of localhost
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, { username, password });
       const { token } = response.data;
       
       // Store the token in localStorage
