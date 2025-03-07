@@ -6,13 +6,15 @@ const Inbox = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
     useEffect(() => {
         fetchMessages();
     }, []);
 
     const fetchMessages = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/messages');
+            const res = await axios.get(`${API_BASE_URL}/api/messages`);
             setMessages(res.data);
             setLoading(false);
         } catch (err) {
@@ -26,7 +28,7 @@ const Inbox = () => {
         if (!window.confirm("Are you sure you want to delete this message?")) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/messages/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/messages/${id}`);
             setMessages(messages.filter(msg => msg.id !== id));
         } catch (error) {
             console.error("Error deleting message:", error);
@@ -36,7 +38,7 @@ const Inbox = () => {
 
     const markAsRead = async (id) => {
         try {
-            await axios.patch(`http://localhost:5000/api/messages/${id}/read`);
+            await axios.patch(`${API_BASE_URL}/api/messages/${id}/read`);
             setMessages(messages.map(msg => msg.id === id ? { ...msg, is_read: true } : msg));
         } catch (error) {
             console.error("Error marking message as read:", error);

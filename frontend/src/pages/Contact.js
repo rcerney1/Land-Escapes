@@ -9,6 +9,7 @@ const Contact = () => {
     });
 
     const [status, setStatus] = useState(null); // Track submission status
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +20,7 @@ const Contact = () => {
         setStatus("loading");
 
         try {
-            await axios.post("http://localhost:5000/api/messages", formData);
+            await axios.post(`${API_BASE_URL}/api/messages`, formData);
             setStatus("success");
             setFormData({ name: "", email: "", message: "" });
         } catch (error) {

@@ -9,7 +9,9 @@ function Footer() {
     });
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/contact")
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
+        axios.get(`${API_BASE_URL}/api/contact`)
             .then(res => setContact(res.data))
             .catch(err => console.error("Error fetching contact info:", err));
     }, []);
@@ -23,7 +25,6 @@ function Footer() {
                 <p>📍 {contact.address}</p>
                 <p className="mt-4 text-sm">&copy; {new Date().getFullYear()} Land Escapes. All rights reserved.</p>
             </div>
-            
         </footer>
     );
 }

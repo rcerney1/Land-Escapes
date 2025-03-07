@@ -17,8 +17,9 @@ const ManageProjects = () => {
     }, []);
 
     const fetchProjects = async () => {
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
         try {
-            const res = await axios.get("http://localhost:5000/api/projects");
+            const res = await axios.get(`${API_BASE_URL}/api/projects`);
             setProjects(res.data);
         } catch (error) {
             console.error("Error fetching projects:", error);
@@ -37,6 +38,8 @@ const ManageProjects = () => {
         e.preventDefault();
         setStatus("loading");
 
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in API requests
+
         try {
             const formDataObj = new FormData();
             formDataObj.append("title", formData.title);
@@ -46,9 +49,9 @@ const ManageProjects = () => {
             }
 
             if (editMode) {
-                await axios.put(`http://localhost:5000/api/projects/${editId}`, formDataObj);
+                await axios.put(`${API_BASE_URL}/api/projects/${editId}`, formDataObj);
             } else {
-                await axios.post("http://localhost:5000/api/projects", formDataObj);
+                await axios.post(`${API_BASE_URL}/api/projects`, formDataObj);
             }
 
             setStatus("success");
@@ -64,8 +67,10 @@ const ManageProjects = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this project?")) return;
 
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in DELETE request
+
         try {
-            await axios.delete(`http://localhost:5000/api/projects/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/projects/${id}`);
             fetchProjects();
         } catch (error) {
             console.error("Error deleting project:", error);

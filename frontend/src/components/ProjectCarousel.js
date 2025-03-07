@@ -9,14 +9,16 @@ const ProjectCarousel = () => {
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/projects")
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
+        fetch(`${API_BASE_URL}/api/projects`)
             .then((res) => res.json())
             .then((data) => setProjects(data))
             .catch((err) => console.error("Error fetching projects:", err));
     }, []);
 
     return (
-        <section className="py-20  flex flex-col items-center text-center">
+        <section className="py-20 flex flex-col items-center text-center">
             <h2 className="text-4xl font-heading mb-8">Our Projects</h2>
             <div className="w-full max-w-5xl">
                 <Swiper
@@ -25,7 +27,7 @@ const ProjectCarousel = () => {
                     slidesPerView={1}
                     navigation
                     pagination={{ clickable: true }}
-                    autoplay={{ delay: 500000, disableOnInteraction: false }}
+                    autoplay={{ delay: 5000, disableOnInteraction: false }}
                     className="rounded-lg shadow-lg"
                 >
                     {projects.length > 0 ? (

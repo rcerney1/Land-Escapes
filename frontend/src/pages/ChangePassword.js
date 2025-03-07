@@ -9,6 +9,8 @@ const ChangePassword = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
     const handleChangePassword = async (e) => {
         e.preventDefault();
         setMessage('');
@@ -17,7 +19,7 @@ const ChangePassword = () => {
         try {
             const token = localStorage.getItem('token');  // Get JWT token from storage
             const response = await axios.post(
-                'http://localhost:5000/api/auth/change-password',
+                `${API_BASE_URL}/api/auth/change-password`,
                 { currentPassword, newPassword },
                 {
                     headers: { Authorization: `Bearer ${token}` }
@@ -46,7 +48,7 @@ const ChangePassword = () => {
                     placeholder="Current Password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="mb-4 p-2 border"
+                    className="mb-4 p-2 border w-full"
                     required
                 />
                 <input
@@ -54,10 +56,10 @@ const ChangePassword = () => {
                     placeholder="New Password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="mb-4 p-2 border"
+                    className="mb-4 p-2 border w-full"
                     required
                 />
-                <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+                <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">
                     Update Password
                 </button>
             </form>

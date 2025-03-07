@@ -17,8 +17,9 @@ const ManageServices = () => {
     }, []);
 
     const fetchServices = async () => {
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
         try {
-            const res = await axios.get("http://localhost:5000/api/services");
+            const res = await axios.get(`${API_BASE_URL}/api/services`);
             setServices(res.data);
         } catch (error) {
             console.error("Error fetching services:", error);
@@ -38,6 +39,8 @@ const ManageServices = () => {
         e.preventDefault();
         setStatus("loading");
 
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in API requests
+
         try {
             const formDataObj = new FormData();
             formDataObj.append("name", formData.name);
@@ -47,9 +50,9 @@ const ManageServices = () => {
             }
 
             if (editMode) {
-                await axios.put(`http://localhost:5000/api/services/${editId}`, formDataObj);
+                await axios.put(`${API_BASE_URL}/api/services/${editId}`, formDataObj);
             } else {
-                await axios.post("http://localhost:5000/api/services", formDataObj);
+                await axios.post(`${API_BASE_URL}/api/services`, formDataObj);
             }
 
             setStatus("success");
@@ -65,8 +68,10 @@ const ManageServices = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this service?")) return;
 
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in DELETE request
+
         try {
-            await axios.delete(`http://localhost:5000/api/services/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/services/${id}`);
             fetchServices();
         } catch (error) {
             console.error("Error deleting service:", error);

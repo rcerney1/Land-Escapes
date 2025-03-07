@@ -6,7 +6,9 @@ const ManageAbout = () => {
     const [newContent, setNewContent] = useState("");
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/about")
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
+        axios.get(`${API_BASE_URL}/api/about`)
             .then(res => {
                 setAbout(res.data.content);
                 setNewContent(res.data.content);
@@ -15,8 +17,13 @@ const ManageAbout = () => {
     }, []);
 
     const handleUpdate = () => {
-        axios.put("http://localhost:5000/api/about", { content: newContent })
-            .then(() => alert('section updated'), setAbout(newContent))
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in PUT request
+
+        axios.put(`${API_BASE_URL}/api/about`, { content: newContent })
+            .then(() => {
+                alert('Section updated');
+                setAbout(newContent);
+            })
             .catch(err => console.error("Error updating about section:", err));
     };
 

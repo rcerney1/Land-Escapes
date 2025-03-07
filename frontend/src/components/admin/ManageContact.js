@@ -10,7 +10,9 @@ const ManageContact = () => {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/contact")
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Use environment variable
+
+        axios.get(`${API_BASE_URL}/api/contact`)
             .then(res => setContact(res.data))
             .catch(err => console.error("Error fetching contact info:", err));
     }, []);
@@ -21,8 +23,10 @@ const ManageContact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const API_BASE_URL = process.env.REACT_APP_BACKEND_URL; // Ensure it's used in PUT request
+
         try {
-            await axios.put("http://localhost:5000/api/contact", contact);
+            await axios.put(`${API_BASE_URL}/api/contact`, contact);
             setMessage("Contact information updated successfully!");
         } catch (error) {
             console.error("Error updating contact info:", error);
